@@ -19,7 +19,7 @@ const AddProduct = () => {
 
     try {
       const response = await axios.post(
-        "http://flutterbackend-production-affa.up.railway.app/api/products",
+        "https://flutterbackend-production-affa.up.railway.app/api/products",
         {
           name,
           price,

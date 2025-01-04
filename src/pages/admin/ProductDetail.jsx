@@ -12,7 +12,7 @@ const ProductDetail = () => {
     const fetchProductDetail = async () => {
       try {
         const response = await axios.get(
-          `http://flutterbackend-production-affa.up.railway.app/api/products/${id}`
+          `https://flutterbackend-production-affa.up.railway.app/api/products/${id}`
         );
         setProduct(response.data);
       } catch (error) {
@@ -28,7 +28,7 @@ const ProductDetail = () => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://flutterbackend-production-affa.up.railway.app/api/products/${id}`
+        `https://flutterbackend-production-affa.up.railway.app/api/products/${id}`
       );
       navigate("/products");
     } catch (error) {

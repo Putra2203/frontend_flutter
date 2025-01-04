@@ -14,7 +14,7 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await axios.get(`http://flutterbackend-production-affa.up.railway.app/api/products/${id}`);
+        const response = await axios.get(`https://flutterbackend-production-affa.up.railway.app/api/products/${id}`);
         const product = response.data;
         setName(product.name);
         setPrice(product.price);
@@ -33,7 +33,7 @@ const EditProduct = () => {
     e.preventDefault();
 
     try {
-      await axios.put(`http://flutterbackend-production-affa.up.railway.app/api/products/${id}`, {
+      await axios.put(`https://flutterbackend-production-affa.up.railway.app/api/products/${id}`, {
         name,
         price,
         image,
