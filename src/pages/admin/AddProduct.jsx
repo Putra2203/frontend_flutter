@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 const AddProduct = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+
+  const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,38 +20,32 @@ const AddProduct = () => {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post(
-        "https://flutterbackend-production-affa.up.railway.app/api/products",
-        {
-          name,
-          price,
-          image,
-        }
-      );
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("image", image); // Menambahkan file gambar
 
-      setLoading(false); // Matikan loading setelah menerima response
+      const response = await axios.post(`${BASE_URL}/api/products`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      // Menangani respons berdasarkan kode status HTTP
-      if (response.status === 200) {
-        setSuccessMessage("Product added successfully!"); // Pesan sukses untuk status 200
-        navigate("/products"); // Redirect setelah sukses
-      } else if (response.status === 201) {
-        setSuccessMessage("Product created successfully!"); // Pesan sukses untuk status 201
+      setLoading(false);
+
+      // Menampilkan pesan sukses dan redirect ke halaman produk
+      if (response.status === 201) {
+        setSuccessMessage("Product added successfully!");
         navigate("/products");
-      } else {
-        setError(`Unexpected status: ${response.status}`); // Pesan jika status tidak terduga
       }
     } catch (error) {
-      setLoading(false); // Matikan loading saat terjadi error
+      setLoading(false);
 
-      // Menangani kesalahan yang mungkin terjadi selama permintaan
+      // Menangani kesalahan
       if (error.response) {
-        // Jika server mengembalikan respons error
         const { status, data } = error.response;
         if (status === 400) {
           setError(`Bad Request: ${data.message || "Invalid input"}`);
-        } else if (status === 404) {
-          setError("Resource not found.");
         } else if (status === 500) {
           setError("Internal Server Error. Please try again later.");
         } else {
@@ -99,11 +95,10 @@ const AddProduct = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block">Image URL:</label>
+          <label className="block">Image:</label>
           <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
             className="w-full p-2 border rounded"
             required
           />
@@ -111,7 +106,7 @@ const AddProduct = () => {
         <button
           type="submit"
           className="px-4 py-2 bg-green-500 text-white rounded"
-          disabled={loading} 
+          disabled={loading}
         >
           {loading ? "Adding..." : "Add Product"}
         </button>

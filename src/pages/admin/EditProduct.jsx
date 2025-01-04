@@ -5,20 +5,24 @@ import { useParams, useNavigate } from "react-router-dom";
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
+  const [existingImage, setExistingImage] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // URL backend
+  const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await axios.get(`https://flutterbackend-production-affa.up.railway.app/api/products/${id}`);
+        const response = await axios.get(`${BASE_URL}/api/products/${id}`);
         const product = response.data;
         setName(product.name);
         setPrice(product.price);
-        setImage(product.image);
+        setExistingImage(product.image); // Path gambar lama
       } catch (error) {
         console.error("Error fetching product data:", error);
       } finally {
@@ -29,14 +33,21 @@ const EditProduct = () => {
     fetchProductData();
   }, [id]);
 
-      const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.put(`https://flutterbackend-production-affa.up.railway.app/api/products/${id}`, {
-        name,
-        price,
-        image,
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("price", price);
+      if (image) {
+        formData.append("image", image); // Tambahkan file gambar jika ada
+      }
+
+      await axios.put(`${BASE_URL}/api/products/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       navigate(`/products/${id}`);
     } catch (error) {
@@ -73,13 +84,21 @@ const EditProduct = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block">Image URL:</label>
+          <label className="block">Existing Image:</label>
+          {existingImage && (
+            <img
+              src={`${BASE_URL}/${existingImage}`}
+              alt="Existing Product"
+              className="w-full h-auto rounded mb-2"
+            />
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block">New Image (optional):</label>
           <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
             className="w-full p-2 border rounded"
-            required
           />
         </div>
         <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">

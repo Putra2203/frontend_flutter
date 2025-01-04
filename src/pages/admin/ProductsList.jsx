@@ -6,10 +6,13 @@ const ProductsList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // URL backend
+  const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://flutterbackend-production-affa.up.railway.app/api/products");
+        const response = await axios.get(`${BASE_URL}/api/products`);
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -33,8 +36,14 @@ const ProductsList = () => {
               <div className="p-4 border rounded shadow">
                 <h2 className="text-xl font-semibold">{product.name}</h2>
                 <p>Price: ${product.price}</p>
-                <p>Price: ${product.image}</p>
-                
+                {/* Tampilkan gambar produk */}
+                {product.image && (
+                  <img
+                    src={`${BASE_URL}/${product.image}`}
+                    alt={product.name}
+                    className="w-full h-auto mt-2"
+                  />
+                )}
                 <div className="mt-2">
                   <Link
                     to={`/products/${product.id}`}

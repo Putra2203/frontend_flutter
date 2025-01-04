@@ -8,12 +8,13 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // URL backend
+  const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
+
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await axios.get(
-          `https://flutterbackend-production-affa.up.railway.app/api/products/${id}`
-        );
+        const response = await axios.get(`${BASE_URL}/api/products/${id}`);
         setProduct(response.data);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -27,9 +28,7 @@ const ProductDetail = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `https://flutterbackend-production-affa.up.railway.app/api/products/${id}`
-      );
+      await axios.delete(`${BASE_URL}/api/products/${id}`);
       navigate("/products");
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -44,12 +43,20 @@ const ProductDetail = () => {
     <div className="container mx-auto p-4">
       {loading ? (
         <div className="text-center">Loading...</div>
-      ) : (
+      ) : product ? (
         <div>
           <h1 className="text-2xl font-bold">{product.name}</h1>
           <p className="mb-4">Price: ${product.price}</p>
-          <p className="mb-4">imagePath: ${product.image}</p>
-          
+
+          {/* Tampilkan gambar produk */}
+          {product.image && (
+            <img
+              src={`${BASE_URL}/${product.image}`}
+              alt={product.name}
+              className="w-full h-auto mb-4 rounded shadow"
+            />
+          )}
+
           <button
             onClick={handleEdit}
             className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded"
@@ -63,6 +70,8 @@ const ProductDetail = () => {
             Delete Product
           </button>
         </div>
+      ) : (
+        <div className="text-center">Product not found.</div>
       )}
     </div>
   );
