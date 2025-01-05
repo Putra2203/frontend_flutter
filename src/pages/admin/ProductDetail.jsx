@@ -11,6 +11,7 @@ const ProductDetail = () => {
   // URL backend
   const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
 
+  // Fetch product detail
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
@@ -26,21 +27,28 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [id]);
 
+  // Handle delete
   const handleDelete = async () => {
     try {
-      await axios.delete(`${BASE_URL}/api/products/${id}`);
-      navigate("/products");
+      const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+      if (confirmDelete) {
+        await axios.delete(`${BASE_URL}/api/products/${id}`);
+        alert("Product deleted successfully!");
+        navigate("/products");
+      }
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert("Failed to delete product.");
     }
   };
 
+  // Handle edit
   const handleEdit = () => {
     navigate(`/edit-products/${id}`);
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container p-4 mx-auto">
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : product ? (
@@ -49,23 +57,25 @@ const ProductDetail = () => {
           <p className="mb-4">Price: ${product.price}</p>
 
           {/* Tampilkan gambar produk */}
-          {product.image && (
+          {product.image ? (
             <img
-              src={`${BASE_URL}/${product.image}`}
+              src={product.image} // Gunakan URL langsung dari GCS
               alt={product.name}
               className="w-full h-auto mb-4 rounded shadow"
             />
+          ) : (
+            <p>No image available</p>
           )}
 
           <button
             onClick={handleEdit}
-            className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded"
+            className="px-4 py-2 mt-2 text-white bg-yellow-500 rounded"
           >
             Edit Product
           </button>
           <button
             onClick={handleDelete}
-            className="mt-2 px-4 py-2 bg-red-500 text-white rounded ml-2"
+            className="px-4 py-2 mt-2 ml-2 text-white bg-red-500 rounded"
           >
             Delete Product
           </button>

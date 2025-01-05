@@ -11,6 +11,7 @@ const EditProduct = () => {
   const [image, setImage] = useState(null);
   const [existingImage, setExistingImage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // URL backend
   const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
@@ -22,9 +23,10 @@ const EditProduct = () => {
         const product = response.data;
         setName(product.name);
         setPrice(product.price);
-        setExistingImage(product.image); // Path gambar lama
+        setExistingImage(product.image); // URL GCS langsung
       } catch (error) {
         console.error("Error fetching product data:", error);
+        setError("Failed to load product data.");
       } finally {
         setLoading(false);
       }
@@ -35,13 +37,14 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
     try {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("price", price);
       if (image) {
-        formData.append("image", image); // Tambahkan file gambar jika ada
+        formData.append("image", image); // Tambahkan file gambar baru jika ada
       }
 
       await axios.put(`${BASE_URL}/api/products/${id}`, formData, {
@@ -49,9 +52,12 @@ const EditProduct = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+
+      alert("Product updated successfully!");
       navigate(`/products/${id}`);
     } catch (error) {
       console.error("Error updating product:", error);
+      setError("Failed to update product. Please try again.");
     }
   };
 
@@ -59,9 +65,13 @@ const EditProduct = () => {
     return <div className="text-center">Loading...</div>;
   }
 
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit Product</h1>
+    <div className="container p-4 mx-auto">
+      <h1 className="mb-4 text-2xl font-bold">Edit Product</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block">Product Name:</label>
@@ -85,12 +95,14 @@ const EditProduct = () => {
         </div>
         <div className="mb-4">
           <label className="block">Existing Image:</label>
-          {existingImage && (
+          {existingImage ? (
             <img
-              src={`${BASE_URL}/${existingImage}`}
+              src={existingImage} // URL GCS langsung
               alt="Existing Product"
-              className="w-full h-auto rounded mb-2"
+              className="w-full h-auto mb-2 rounded"
             />
+          ) : (
+            <p>No existing image available.</p>
           )}
         </div>
         <div className="mb-4">
@@ -101,7 +113,10 @@ const EditProduct = () => {
             className="w-full p-2 border rounded"
           />
         </div>
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">
+        <button
+          type="submit"
+          className="px-4 py-2 text-white bg-blue-500 rounded"
+        >
           Update Product
         </button>
       </form>

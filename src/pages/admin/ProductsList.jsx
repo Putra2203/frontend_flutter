@@ -25,8 +25,8 @@ const ProductsList = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Product List</h1>
+    <div className="container p-4 mx-auto">
+      <h1 className="mb-4 text-2xl font-bold">Product List</h1>
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
@@ -39,7 +39,7 @@ const ProductsList = () => {
                 {/* Tampilkan gambar produk */}
                 {product.image && (
                   <img
-                    src={`${BASE_URL}/${product.image}`}
+                    src={product.image} 
                     alt={product.name}
                     className="w-full h-auto mt-2"
                   />
@@ -47,7 +47,7 @@ const ProductsList = () => {
                 <div className="mt-2">
                   <Link
                     to={`/products/${product.id}`}
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    className="px-4 py-2 text-white bg-blue-500 rounded"
                   >
                     View Details
                   </Link>

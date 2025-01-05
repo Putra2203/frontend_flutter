@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const AddProduct = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null); 
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,6 +20,13 @@ const AddProduct = () => {
     setSuccessMessage("");
 
     try {
+      // Validasi input sebelum dikirim
+      if (!name || !price || !image) {
+        setError("Please fill all fields and upload an image.");
+        setLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("name", name);
       formData.append("price", price);
@@ -36,7 +43,7 @@ const AddProduct = () => {
       // Menampilkan pesan sukses dan redirect ke halaman produk
       if (response.status === 201) {
         setSuccessMessage("Product added successfully!");
-        navigate("/products");
+        setTimeout(() => navigate("/products"), 2000); // Redirect setelah 2 detik
       }
     } catch (error) {
       setLoading(false);
@@ -58,24 +65,24 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
+    <div className="container p-4 mx-auto">
+      <h1 className="mb-4 text-2xl font-bold">Add New Product</h1>
 
       {/* Pesan Sukses */}
       {successMessage && (
-        <div className="mb-4 p-2 bg-green-500 text-white rounded">
+        <div className="p-2 mb-4 text-white bg-green-500 rounded">
           {successMessage}
         </div>
       )}
 
       {/* Pesan Error */}
       {error && (
-        <div className="mb-4 p-2 bg-red-500 text-white rounded">{error}</div>
+        <div className="p-2 mb-4 text-white bg-red-500 rounded">{error}</div>
       )}
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block">Product Name:</label>
+          <label className="block font-semibold">Product Name:</label>
           <input
             type="text"
             value={name}
@@ -85,7 +92,7 @@ const AddProduct = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block">Price:</label>
+          <label className="block font-semibold">Price:</label>
           <input
             type="number"
             value={price}
@@ -95,7 +102,7 @@ const AddProduct = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block">Image:</label>
+          <label className="block font-semibold">Image:</label>
           <input
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
@@ -105,7 +112,7 @@ const AddProduct = () => {
         </div>
         <button
           type="submit"
-          className="px-4 py-2 bg-green-500 text-white rounded"
+          className="px-4 py-2 text-white bg-green-500 rounded"
           disabled={loading}
         >
           {loading ? "Adding..." : "Add Product"}
