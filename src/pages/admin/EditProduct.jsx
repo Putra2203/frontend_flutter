@@ -11,7 +11,6 @@ const EditProduct = () => {
   const [image, setImage] = useState(null);
   const [existingImage, setExistingImage] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   // URL backend
   const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
@@ -23,10 +22,9 @@ const EditProduct = () => {
         const product = response.data;
         setName(product.name);
         setPrice(product.price);
-        setExistingImage(product.image); // URL GCS langsung
+        setExistingImage(product.image); // Path gambar lama
       } catch (error) {
         console.error("Error fetching product data:", error);
-        setError("Failed to load product data.");
       } finally {
         setLoading(false);
       }
@@ -37,14 +35,13 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
 
     try {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("price", price);
       if (image) {
-        formData.append("image", image); // Tambahkan file gambar baru jika ada
+        formData.append("image", image); // Tambahkan file gambar jika ada
       }
 
       await axios.put(`${BASE_URL}/api/products/${id}`, formData, {
@@ -52,21 +49,14 @@ const EditProduct = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      alert("Product updated successfully!");
       navigate(`/products/${id}`);
     } catch (error) {
       console.error("Error updating product:", error);
-      setError("Failed to update product. Please try again.");
     }
   };
 
   if (loading) {
     return <div className="text-center">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
   }
 
   return (
@@ -95,14 +85,12 @@ const EditProduct = () => {
         </div>
         <div className="mb-4">
           <label className="block">Existing Image:</label>
-          {existingImage ? (
+          {existingImage && (
             <img
-              src={existingImage} // URL GCS langsung
+              src={`${BASE_URL}/${existingImage}`}
               alt="Existing Product"
               className="w-full h-auto mb-2 rounded"
             />
-          ) : (
-            <p>No existing image available.</p>
           )}
         </div>
         <div className="mb-4">
@@ -113,10 +101,7 @@ const EditProduct = () => {
             className="w-full p-2 border rounded"
           />
         </div>
-        <button
-          type="submit"
-          className="px-4 py-2 text-white bg-blue-500 rounded"
-        >
+        <button type="submit" className="px-4 py-2 text-white bg-blue-500 rounded">
           Update Product
         </button>
       </form>

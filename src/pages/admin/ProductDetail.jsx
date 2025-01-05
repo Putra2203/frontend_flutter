@@ -11,7 +11,6 @@ const ProductDetail = () => {
   // URL backend
   const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
 
-  // Fetch product detail
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
@@ -27,22 +26,15 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [id]);
 
-  // Handle delete
   const handleDelete = async () => {
     try {
-      const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-      if (confirmDelete) {
-        await axios.delete(`${BASE_URL}/api/products/${id}`);
-        alert("Product deleted successfully!");
-        navigate("/products");
-      }
+      await axios.delete(`${BASE_URL}/api/products/${id}`);
+      navigate("/products");
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Failed to delete product.");
     }
   };
 
-  // Handle edit
   const handleEdit = () => {
     navigate(`/edit-products/${id}`);
   };
@@ -57,14 +49,12 @@ const ProductDetail = () => {
           <p className="mb-4">Price: ${product.price}</p>
 
           {/* Tampilkan gambar produk */}
-          {product.image ? (
+          {product.image && (
             <img
-              src={product.image} // Gunakan URL langsung dari GCS
+              src={`${BASE_URL}/${product.image}`}
               alt={product.name}
               className="w-full h-auto mb-4 rounded shadow"
             />
-          ) : (
-            <p>No image available</p>
           )}
 
           <button

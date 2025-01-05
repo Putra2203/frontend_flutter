@@ -6,7 +6,6 @@ const ProductsList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // URL backend
   const BASE_URL = "https://flutterbackend-production-affa.up.railway.app";
 
   useEffect(() => {
@@ -39,7 +38,7 @@ const ProductsList = () => {
                 {/* Tampilkan gambar produk */}
                 {product.image && (
                   <img
-                    src={product.image} 
+                    src={`${BASE_URL}/${product.image}`}
                     alt={product.name}
                     className="w-full h-auto mt-2"
                   />
