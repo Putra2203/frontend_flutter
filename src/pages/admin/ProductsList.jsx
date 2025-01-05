@@ -38,7 +38,7 @@ const ProductsList = () => {
                 {/* Tampilkan gambar produk */}
                 {product.image && (
                   <img
-                    src={`${BASE_URL}/${product.image}`}
+                    src={product.image}
                     alt={product.name}
                     className="w-full h-auto mt-2"
                   />

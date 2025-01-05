@@ -51,7 +51,7 @@ const ProductDetail = () => {
           {/* Tampilkan gambar produk */}
           {product.image && (
             <img
-              src={`${BASE_URL}/${product.image}`}
+              src={product.image}
               alt={product.name}
               className="w-full h-auto mb-4 rounded shadow"
             />
