@@ -24,24 +24,26 @@ const ProductsList = () => {
   }, []);
 
   return (
-    <div className="container p-4 mx-auto">
+    <div className="flex flex-col p-4 mx-auto">
       <h1 className="mb-4 text-2xl font-bold">Product List</h1>
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
-        <ul>
+        <ul className="flex flex-col gap-2 lg:flex-row">
           {products.map((product) => (
             <li key={product.id} className="mb-4">
-              <div className="p-4 border rounded shadow">
+              <div className="flex flex-col items-center justify-center p-4 border rounded shadow h-80 lg:h-72">
                 <h2 className="text-xl font-semibold">{product.name}</h2>
                 <p>Price: ${product.price}</p>
                 {/* Tampilkan gambar produk */}
                 {product.image && (
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-auto mt-2"
-                  />
+                  <div className="h-44 w-52 lg:w-40">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="object-cover w-full h-auto mt-2"
+                    />
+                  </div>
                 )}
                 <div className="mt-2">
                   <Link

@@ -3,10 +3,10 @@ import { NavLink } from "react-router-dom";
 
 function Sider() {
   return (
-    <aside className="w-64 p-4 text-white bg-green-600">
+    <aside className="w-full p-4 text-white bg-green-600 lg:w-64">
       <h1 className="text-2xl font-bold">Admin Management</h1>
       <nav className="mt-4">
-        <ul>
+        <ul className="flex flex-row lg:flex-col">
           <li className="p-2 hover:bg-green-700">
             <NavLink
               to="/products"
