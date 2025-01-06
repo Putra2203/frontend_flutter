@@ -40,7 +40,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="container p-4 mx-auto">
+    <div className="p-4 mx-auto">
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : product ? (
@@ -50,11 +50,13 @@ const ProductDetail = () => {
 
           {/* Tampilkan gambar produk */}
           {product.image && (
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-auto mb-4 rounded shadow"
-            />
+            <div className="h-40 w-60 bg-slate-300">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="object-cover w-full h-auto mb-4 rounded shadow"
+              />
+            </div>
           )}
 
           <button

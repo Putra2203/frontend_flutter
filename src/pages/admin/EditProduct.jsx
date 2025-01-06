@@ -87,7 +87,7 @@ const EditProduct = () => {
           <label className="block">Existing Image:</label>
           {existingImage && (
             <img
-              src={`${BASE_URL}/${existingImage}`}
+              src={existingImage}
               alt="Existing Product"
               className="w-full h-auto mb-2 rounded"
             />
